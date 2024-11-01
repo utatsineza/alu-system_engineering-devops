@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# SSH client configuration for passwordless authentication
+Host 2b7024a61745.500845f2.alu-cod.online
+    HostName ubuntu
+    User 2b7024a61745i
+    IdentityFile ~/.ssh/school
+    PasswordAuthentication no
+
