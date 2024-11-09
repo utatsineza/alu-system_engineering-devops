@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# Update the package list
+sudo apt update
+
+# Install Nginx
+sudo apt install -y nginx
+
+# Configure Nginx to listen on port 80
+sudo sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+
+# Modify the default Nginx page to contain the string "Holberton School"
+echo "Holberton School" | sudo tee /var/www/html/index.nginx-debian.html > /dev/null
+
+# Restart Nginx without using systemctl
+sudo service nginx restart
+
+# Verify Nginx is running and listening on port 80
+if curl -s http://localhost | grep -q "Holberton School"; then
+  echo "Nginx configured successfully with 'Holberton School' on the homepage."
+else
+  echo "Nginx configuration failed."
+  exit 1
+fi
+
