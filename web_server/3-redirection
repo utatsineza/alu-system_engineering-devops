@@ -1,22 +1,16 @@
 #!/usr/bin/env bash
+#  A Script that configures a new Ubuntu machine to Perform a 301-redirection
 
-# Update package list and install Nginx
-sudo apt update
-sudo apt install -y nginx
+# Upadating Packages before Installations
+sudo apt-get update
+sudo apt-get install -y nginx
 
-# Configure Nginx to redirect /redirect_me to a specified page with 301 status
-# We will add a location block in the default Nginx configuration file
-REDIRECT_URL="https://www.youtube.com/watch?v=QH2-TGUlwu4"
-sudo sed -i "/location \/ {/i location /redirect_me {\n\treturn 301 $REDIRECT_URL;\n}" /etc/nginx/sites-available/default
+# Creating an index.html page
+echo "Holberton School!" | sudo tee /var/www/html/index.html
 
-# Restart Nginx without using systemctl
+# Performing a 301 Redirection
+string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/utatsineza permanent;"
+sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
+
+# Restarting Nginx service
 sudo service nginx restart
-
-# Verify if the redirect is set correctly
-if curl -sI http://localhost/redirect_me | grep -q "301 Moved Permanently"; then
-  echo "Redirection to $REDIRECT_URL configured successfully with 301 status."
-else
-  echo "Failed to configure 301 redirection."
-  exit 1
-fi
-
