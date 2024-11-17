@@ -1,16 +1,27 @@
 #!/usr/bin/env bash
-#  A Script that configures a new Ubuntu machine to Perform a 301-redirection
+# This script configures Nginx to redirect /redirect_me to a YouTube video with a 301 status code.
+# script that install nginx and configure it to redirect to another page when
+# accessing the /redirect_me page.
+sudo apt update -y
+sudo apt install nginx -y
 
-# Upadating Packages before Installations
-sudo apt-get update
-sudo apt-get install -y nginx
-
-# Creating an index.html page
-echo "Holberton School!" | sudo tee /var/www/html/index.html
-
-# Performing a 301 Redirection
-string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/github.com\/utatsineza permanent;"
-sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
-
-# Restarting Nginx service
+sudo mkdir /etc/nginx/html
+sudo touch /etc/nginx/html/index.html
+# store configuration content
+new_config=\
+"server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+               root /var/www/html;
+        index index.html index.htm index.nginx-debian.html;
+        server_name _;
+        location / {
+                try_files \$uri \$uri/ =404;
+        }
+        location /redirect_me { 
+            return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+        }
+}
+"
+echo "$new_config" > /etc/nginx/sites-available/default
 sudo service nginx restart
